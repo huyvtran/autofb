@@ -18,6 +18,9 @@
                 <div>
                     <a href= "view-source:https://www.facebook.com/profile" target="_blank" > view-source:https://www.facebook.com/profile</a>
                 </div>
+                <div>
+                    <a href= "https://baiviethay.org/lay-ma-token-facebook-cap-nhat-29-9-2018/" target="_blank" > Cách lấy token mới nhất</a>
+                </div>
             </div>
             </div>
         </div>
