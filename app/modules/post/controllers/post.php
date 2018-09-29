@@ -334,15 +334,15 @@ class post extends MX_Controller {
 					ms(array(
 						"st"    => "valid",
 						"label" => "bg-red",
-						"txt"   => l('Add at least two images')
+						"txt"   => l('Vui lòng thêm nhiều hơn 2 ảnh')
 					));
 				}
 
-				if(count(post('images_url[]')) > 50){
+				if(count(post('images_url[]')) > 10){
 					ms(array(
 						"st"    => "valid",
 						"label" => "bg-red",
-						"txt"   => l('Add maximum three images')
+						"txt"   => l('Vui lòng thêm nhỏ hơn 10 ảnh')
 					));
 				}
 

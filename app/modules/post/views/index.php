@@ -88,7 +88,7 @@
                                     </div>
                                 </div>
                                 <div role="tabpanel" class="tab-pane" id="images_animation_1">
-                                    <label><?=l('Images')?></label> <span class="col-grey"><?=l('(add at least two and maximum three images)'); ?></span>
+                                    <label><?=l('Images')?></label> <span class="col-grey"><?=l('(Thêm nhiều hơn 2 và nhỏ hơn 10 ảnh)'); ?></span>
                                     <div class="input-group">
                                         <div class="form-line">
                                             <input type="text" name="images_url" class="form-control remote-image" placeholder="<?=l('')?>">
