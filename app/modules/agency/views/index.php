@@ -34,16 +34,13 @@
                                     <input type="checkbox" id="md_checkbox_211" class="filled-in chk-col-red checkAll">
                                     <label class="p0 m0" for="md_checkbox_211">&nbsp;</label>
                                 </th>
-                                <th><?=l('Admin')?></th> 
-                                
                                 <th><?=l('Tên')?></th>
                                 <th><?=l('Email')?></th>
-                                <th><?=l('Accounts')?></th>
-                                <th><?=l('Hết hạn')?></th>
-                                <th><?=l('Người giới thiệu')?></th>
-                                <th><?=l('Hoa hồng')?></th>
-                                <th><?=l('Đã giới thiệu')?></th> 
-                                <th><?=l('Bắt đầu')?></th>
+								<th><?=l('Điện thoại')?></th>
+								<th><?=l('Vai trò')?></th>
+								<th><?=l('Thời gian cho đại lý (Tháng)')?></th>
+                                <th><?=l('Hết hạn')?></th>                                
+								<th><?=l('Bắt đầu')?></th>
                                 <th><?=l('Created')?></th>
                                 <th><?=l('Option')?></th>
                             </tr>
@@ -59,15 +56,20 @@
                                     <input type="checkbox" name="id[]" id="md_checkbox_<?=$key?>" class="filled-in chk-col-red checkItem" value="<?=$row->id?>">
                                     <label class="p0 m0" for="md_checkbox_<?=$key?>">&nbsp;</label>
                                 </td>
-                                <td><?=($row->admin == 1)?l("Yes"):l("No")?></td>
-                                
                                 <td><?=$row->fullname?></td>
                                 <td><?=$row->email?></td>
-                                <td><?=$row->maximum_account?></td>
+								<td><?=$row->pid?></td>
+								<td><?php 
+									if ($row->package_id == 9) echo ("PLATINUM"); else
+										if ($row->package_id == 6) echo ("SLIVER"); else
+											if ($row->package_id == 8) echo ("GOLD"); else
+											 echo ("Khách lẻ");?> 
+									
+								
+								</td>
+								<td><?=$row->agency?></td>
                                 <td><?=$row->expiration_date?></td>
-                                <td><?=$row->history_id?></td>
-                                <td><?=$affiliate->sumcommission?></td>
-                                <td><?=$affiliate->user_rf?></td>
+
                                 <td><?=date("h:i Y/m/d", strtotime($row->created))?></td>
                                 <td style="width: 60px;">
                                     <div class="switch">

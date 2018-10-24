@@ -103,8 +103,8 @@ class post_wall_friends extends MX_Controller {
 			$data["group_id"]       = $group[3];
 			$data["name"]           = $group[4];
 			$data["privacy"]        = $group[5];
-			$data["unique_content"] = (int)post("unique_content")?1:0;
-			$data["unique_link"]    = (int)post("unique_link")?1:0;
+			//$data["unique_content"] = (int)post("unique_content")?1:0;
+			//$data["unique_link"]    = (int)post("unique_link")?1:0;
 			$data["time_post"]      = NOW;
 			$data["changed"]        = NOW;
 			$data["created"]        = NOW;
@@ -317,8 +317,8 @@ class post_wall_friends extends MX_Controller {
 				$data["group_id"]       = $group[3];
 				$data["name"]           = $group[4];
 				$data["privacy"]        = $group[5];
-				$data["unique_content"] = (int)post("unique_content")?1:0;
-				$data["unique_link"]    = (int)post("unique_link")?1:0;
+				//$data["unique_content"] = (int)post("unique_content")?1:0;
+				//$data["unique_link"]    = (int)post("unique_link")?1:0;
 				$rand = (rand(100,600));
 				$data["time_post"]      = date("Y-m-d H:i:s", strtotime($time_post) + $list_deplay[$key] + $rand);
 				$data["time_post_show"] = date("Y-m-d H:i:s", $time_post_show + $list_deplay[$key] + $rand);

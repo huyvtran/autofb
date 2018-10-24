@@ -30,7 +30,7 @@ class facebook_accounts extends MX_Controller {
 	public function ajax_get_page_token(){
 		$username     = post('username');
 		$password     = post('password');
-	//	$app = post('app');
+		$app          = post('app');
 
 
 		if($username == "" && $password == "" && $app == ""){
@@ -48,7 +48,7 @@ class facebook_accounts extends MX_Controller {
 				"txt"   => l('Passwords must be at least 6 characters long')
 			));
 		}
-		$app = session('uid');
+	//	$app = session('uid');
 		$url = GET_PAGE_ACCESS_TOKEN($username, $password, $app);
         
         //$data = REQUEST_CURL($url);

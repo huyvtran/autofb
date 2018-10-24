@@ -32,7 +32,7 @@
           <div class="another_action pull-left text-left">
             <input type="checkbox" id="md_checkbox_38" name="remember" class="filled-in chk-col-grey">
             <label for="md_checkbox_38"><?=l('Remember me')?></label><br/>
-            <a href="<?=url("forgot_password")?>"><?=l('Forgot password')?></a>
+            <a href="<?=url("forgot_password")?>"><?=l('Quên mật khẩu click vào đây')?></a>
           </div>
           <button type="submit" class="right btn bg-light-green waves-effect btnActionUpdate"><?=l('Login')?></button>
         </div>

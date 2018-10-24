@@ -33,10 +33,22 @@ class post_model extends MY_Model {
 		return $result;
 	}
 	
-		public function getAllAccountlike(){
-		    $this->db->where("uid = '".session("uid")."'");  
-		    $this->db->where("type != 'friend'");
-            $query = $this->db->get(FACEBOOK_GROUPS);
-		    return $query;
+	public function getAllAccountlike(){
+	    $this->db->where("uid = '".session("uid")."'");  
+	    $this->db->where("type != 'friend'");
+        $query = $this->db->get(FACEBOOK_GROUPS);
+	    return $query;
+	}
+
+	public function getUserCategories() 
+	{
+		$this->db->select("*");
+		$this->db->where('uid', session('uid'));
+		$query = $this->db->get(USER_CATEGORIES);
+		if($query->result()){
+			return $query->result();
+		}else{
+			return false;
 		}
+	}
 }

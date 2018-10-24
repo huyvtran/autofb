@@ -1,14 +1,14 @@
 <form class="ScheduleList" action="<?=cn('ajax_action_multiple')?>">
     <div class="row">
         <div class="clearfix"></div>
-        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="card">
                 <div class="header">
                     <h2>
                         <i class="fa fa-facebook-official" aria-hidden="true"></i> <?=l('Hướng dẫn thêm và update tài khoản facebook')?>
                     </h2>
                 </div>
-                <iframe width="100%" height="360" src="https://www.youtube.com/embed/KfHVFUbCpeQ" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+				<iframe width="100%" height="360" src="https://www.youtube.com/embed/lGzVYD8exzY" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>
         </div>
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -77,7 +77,7 @@
                                 <?php $get_postid = file_get_contents_curl("https://graph.facebook.com/me?access_token=".$row->access_token);
                                     ?>
                                 <?php if(empty($get_postid->id)){ ?> 
-                                <td class = "bg-red">  <?php echo "Token Die"; } else { ?>
+                                <td class = "bg-red">  <?php echo "Token hết hạn"; } else { ?>
                                 <td class = "bg-light-green"> <?php echo "Ok";} ?> </td>
                                 <td class="text-center"><button type="button" class="btn bg-blue waves-effect btnUpdateGroups" data-type="group"><?=l('Update Groups')?></button></td>
                                 <td class="text-center"><button type="button" class="btn bg-blue waves-effect btnUpdateGroups" data-type="page"><?=l('Update Pages')?></button></td>

@@ -36,6 +36,9 @@ class user_management extends MX_Controller {
 	public function ajax_update(){
 		if(IS_ADMIN != 1) redirect(PATH."dashboard");
 		$id = (int)post("id");
+		if ($id != 0){
+			$result1  = $this->model->get("*", user_management, "id = {$id}");
+        }
         $result  = $this->model->get("*", USER_MANAGEMENT, "id = {$id}");
         $affiliate = $result->affiliate;
         $affiliate = json_decode ($affiliate);
@@ -83,12 +86,18 @@ class user_management extends MX_Controller {
 		$groups = (int)post("maximum_groups");
 		$pages  = (int)post("maximum_pages");
 		$friends  = (int)post("maximum_friends");
-       		$package_id = post("package-id");
-       		if (!empty($package_id)){
-        	$package_id = explode('|', $package_id);
+       	
+       	if(post("package-id")){
+			$package_id = post("package-id");
+			$package_id = explode('|', $package_id);
+			$data["package_id"]       = $package_id[1];
+			
+		}else {
+			$data["package_id"] = $result1->package_id;
+		}
 		$data = array(
 			"fullname"         => post("fullname"),
-			"package_id"       => $package_id[1],
+		//	"package_id"       => $package_id[1],
 			"email"            => post("email"),
 			"admin"            => (int)post("admin"),
 			"maximum_account"  => (int)post("maximum_account"),
@@ -100,7 +109,7 @@ class user_management extends MX_Controller {
 			"status"           => (int)post("status"),
 			"changed"          => NOW
 		);
-}
+
 		if((post("commission")) > 100){
 			ms(array(
 				"st"    => "error",

@@ -10,8 +10,9 @@ class agency extends MX_Controller {
 	}
 
 	public function index(){
+		
 		$data = array(
-			"result" => $this->model->fetch("*", USER_MANAGEMENT, "history_id = '".session('uid')."'")
+			"result" => $this->model->fetch("*", USER_MANAGEMENT, "history_id = '".session('uid')."'","id", "DESC")
 		);
 		$this->template->title(l('Quản lý'));
 		$this->template->build('index', $data);
@@ -20,60 +21,199 @@ class agency extends MX_Controller {
 	public function update(){
 	//	if(IS_ADMIN != 1) redirect(PATH."dashboard");
 		$data = array(
-			"result"  => $this->model->get("*", USER_MANAGEMENT, "id = '".get("id")."'"),
+			"result_agency" => $this->model->get("*", USER_MANAGEMENT, "id = '".session('uid')."'"),
+			"result"  => $this->model->get("*", USER_MANAGEMENT, "id = '".get("id")."' and history_id = '".session('uid')."'"),
 			"package" => $this->model->fetch("*", PACKAGE)
 		);
 		$this->template->title(l('User management'));
 		$this->template->build('update', $data);
 	}
+	
+	
+	public function create(){
+	//	if(IS_ADMIN != 1) redirect(PATH."dashboard");
+		$data = array(
+			"result"  => $this->model->get("*", USER_MANAGEMENT, "id = '".get("id")."'"),
+			"package" => $this->model->fetch("*", PACKAGE)
+		);
+		$this->template->title(l('Tạo tài khoản'));
+		$this->template->build('create', $data);
+	}
+
+
 
 	public function ajax_update(){
-	    //echo "<pre>";
-	//	if(IS_ADMIN != 1) redirect(PATH."dashboard");
-		$id = (int)post("rf");
-	//	$id = "45";
-        $result  = $this->model->fetch("*", user_management, "id = {$id} and history_id = '".session('uid')."'");
+		//if(IS_ADMIN != 1) redirect(PATH."dashboard");
+		$id = (int)post("id");
+		$result_agency  = $this->model->get("*", user_management, "id = '".session('uid')."'");
+		if ($id != 0){
+			$result  = $this->model->get("*", user_management, "id = {$id} and history_id = '".session('uid')."'");
         
-        $affiliate = json_decode ($result[0]->affiliate);
-        
-    	if (empty($result[0])) {
-    	   	ms(array(
+			if (empty($result)) {
+				ms(array(
+					"st"    => "error",
+					"label" => "bg-red",
+					"txt"   => l('Tài khoản không thuộc quản lý của bạn')
+				)); 
+			}
+		} 	
+
+		if(post("expiration_date") == ""){
+			ms(array(
 				"st"    => "error",
 				"label" => "bg-red",
-				"txt"   => l('Tài khoản không thuộc quản lý của bạn')
-			)); 
-    	}    else{
-        $package_name = post("package-id");
-        $package_id = $this->model->fetch("*", PACKAGE, "name = '".$package_name."'");
-        $permission = json_decode ($package_id[0]->permission);
+				"txt"   => l('Expiration date is required')
+			));
+		}
 
-        
-        $day = strtotime(NOW) + $package_id[0]->day * 24 *3600;
-        $day1 = date("Y-m-d H:i:s",$day);
-        
-        $affiliate->paided  = $affiliate->paided + $package_id[0]->price;
-		
+		if(post("timezone") == ""){
+			ms(array(
+				"st"    => "error",
+				"label" => "bg-red",
+				"txt"   => l('Timezone is required')
+			));
+		}
+
+		$groups = (int)post("maximum_groups");
+		$pages  = (int)post("maximum_pages");
+		$friends  = (int)post("maximum_friends");
+		   	
 		$data = array(
-			"package_id"       => $package_id[0]->id,
-			"maximum_account"  => $permission->maximum_account,
-			"maximum_groups"   => $permission->maximum_groups,
-			"maximum_pages"    => $permission->maximum_pages,
-			"maximum_friends"  => $permission->maximum_pages,
-			"expiration_date"  => $day1,
+			"fullname"         => post("fullname"),
+			
+			"email"            => post("email"),
+			"admin"            => (int)post("admin"),
+			"maximum_account"  => (int)post("maximum_account"),
+			"maximum_groups"   => $groups,
+			"maximum_pages"    => $pages,
+			"maximum_friends"  => $friends,
+			"expiration_date"  => date("Y-m-d", strtotime(post("expiration_date"))),
+			"timezone"         => post("timezone"),
+			"status"           => 1,
+			"pid"			   => post("phone"),
 			"changed"          => NOW
 		);
-		
-        $data['affiliate'] = json_encode($affiliate);
-        
-		$this->db->update(USER_MANAGEMENT, $data, "id = {$id}");
+		if(post("package-id")){
+			$package_id = post("package-id");
+			$package_id = explode('|', $package_id);
+			$data["package_id"]       = $package_id[1];
+			
+		}else {
+			$data["package_id"] = $result->package_id;
+		}
+		       
+		if($id == 0){
+			if(post("fullname") == ""){
+			ms(array(
+				"st"    => "error",
+				"label" => "bg-red",
+				"txt"   => l('Fullname is required')
+			));
+		}
 
-		 ms(array(
+		if(post("email") == ""){
+			ms(array(
+				"st"    => "error",
+				"label" => "bg-red",
+				"txt"   => l('Email is required')
+			));
+		}
+
+		if(post("phone") == ""){
+			ms(array(
+				"st"    => "error",
+				"label" => "bg-red",
+				"txt"   => l('Phone is required')
+			));
+		}
+		
+		if(!filter_var(post("email"), FILTER_VALIDATE_EMAIL)){
+		  	ms(array(
+				"st"    => "error",
+				"label" => "bg-red",
+				"txt"   => l('Invalid email format')
+			));
+		}
+			if(post("password") == ""){
+				ms(array(
+					"st"    => "error",
+					"label" => "bg-red",
+					"txt"   => l('Password is required')
+				));
+			}
+
+			if(strlen(post("password")) < 6){
+				ms(array(
+					"st"    => "error",
+					"label" => "bg-red",
+					"txt"   => l('Passwords must be at least 6 characters')
+				));
+			}
+
+			if(post("password") != post("repassword")){
+				ms(array(
+					"st"    => "error",
+					"label" => "bg-red",
+					"txt"   => l('Password incorrect')
+				));
+			}
+			if(post("time_for_agency") != 0){
+				$data["agency"] = post("time_for_agency");
+				$data_agency["agency"] = $result_agency->agency - $data["agency"];
+				$this->db->update(USER_MANAGEMENT, $data_agency, "id = '".session('uid')."'");
+			}
+			$data["password"] = md5(post("password"));
+			$data["type"]     = "direct";
+			$data["created"]  = NOW;
+			$data["history_id"]  = session('uid');
+			$POST = $this->model->get('*', USER_MANAGEMENT, "email = '".post('email')."'");
+			if(empty($POST)){
+				$this->db->insert(USER_MANAGEMENT, $data);
+				$id = $this->db->insert_id();
+			}else {
+				ms(array(
+				'st' 	=> 'error',
+				'label' => "bg-red",
+				'txt' 	=> l('Email already exists')
+			));
+			}
+			
+		}else{
+
+			if(post("password") != ""){
+				if(strlen(post("password")) < 6){
+					ms(array(
+						"st"    => "error",
+						"label" => "bg-red",
+						"txt"   => l('Passwords must be at least 6 characters')
+					));
+				}
+
+				if(post("password") != post("repassword")){
+					ms(array(
+						"st"    => "error",
+						"label" => "bg-red",
+						"txt"   => l('Password incorrect')
+					));
+				}
+
+				$data["password"] = md5(post("password"));
+			}
+			
+			if(post("time_for_agency") != 0){
+				$data["agency"] = post("time_for_agency");
+				$data_agency["agency"] = $result_agency->agency + $result->agency - $data["agency"];
+				$this->db->update(USER_MANAGEMENT, $data_agency, "id = '".session('uid')."'");
+			}
+			$this->db->update(USER_MANAGEMENT, $data, array("id" => $id));
+		}
+
+		ms(array(
 			"st"    => "success",
 			"label" => "bg-light-green",
 			"txt"   => l('Update successfully')
-		)); 
-    	}
-	} 
+		));
+	}
 
 	public function ajax_action_item(){
 	//	if(IS_ADMIN != 1) redirect(PATH."dashboard");

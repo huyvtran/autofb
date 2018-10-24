@@ -10,6 +10,11 @@
                                 <div class="body">
                                     <b>Chọn danh mục bài post</b>
                                     <select name ="select_data_cat" class="form-control mr5 input">
+                                        
+                                        <?php foreach($categories_user as $cate){ ?>
+                                        
+                                            <option value="<?=$cate->id?>"><?=$cate->name?> (Danh mục của bạn)</option>
+                                    <?php    }  ?>
                                         <option value="Động lực sống">Động lực sống</option>
                                         <option value="Kinh doanh">Kinh doanh</option>
                                         <option value="Cuộc sống">Cuộc sống</option>
@@ -23,6 +28,22 @@
                                     </select>											
                                 </div>
                             </div>
+							<div class="info-box-2 bg-<?=THEME?> hover-zoom-effect" style="font-size:15px">
+								<div class="content">
+									<div class="text uc"><?=l('Chú ý:')?></div>
+									<div class="number" style="font-size:15px">Nên thêm nhiều chữ ký để tạo các nội dung khác nhau, tránh facebook báo nội dung bị spam</div>
+								</div>
+							</div>
+							<div class="row mt15">
+									<div class="body">                               
+                                    <label><?=l('Chữ ký của bạn')?></label>
+                                    <div class="form-group">
+                                        <div class="form-line p5">
+                                            <textarea rows="4" class="form-control post-message" name="chu_ky" placeholder="<?=l('Thêm chữ ký của bạn ở đây... xuống mỗi dòng 1 chữ ký để thêm nhiều chữ ký')?>"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+							 </div>
                             <div class="row" style="display:none">
                                 <div class="col-md-12 col-xs-12">
                                     <b><?=l('Delay (seconds)')?></b>
@@ -148,7 +169,7 @@
                     </h2>
                      
                 </div>
-                <iframe width="100%" height="360" src="https://www.youtube.com/embed/onfu9qTrg_o" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                <iframe width="100%" height="480" src="https://www.youtube.com/embed/I540jEKPwpw" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                 </div>
                 <div class="body p0">
                     <div class="post-preview">
@@ -215,7 +236,7 @@
                     </div>
                 </div>
                 <div class="body p0">
-                    <table class="table table-bordered table-striped table-hover js-dataTable dataTable mb0">
+                    <table id="book-table" class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
                                 <th style="width: 10px;">
@@ -230,45 +251,7 @@
                                 <th><?=l('Process')?></th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <?php if(!empty($result)){
-                            foreach ($result as $key => $row) {
-                            ?>
-                            <tr class="post-pending">
-                                <td>
-                                    <input type="checkbox" name="id[]" id="md_checkbox_<?=$row->fid?>" class="filled-in chk-col-red checkItem" value="<?="profile{-}".$row->id."{-}".$row->username."{-}".$row->fid."{-}".$row->fullname."{-}0"?>">
-                                    <label class="p0 m0" for="md_checkbox_<?=$row->fid?>">&nbsp;</label>
-                                </td>
-                                <td><?=$row->username?></td>
-                                <td><?=$row->fullname?></td>
-                                <td>profile</td>
-                                <td><?=l('______')?></td>
-                                <td><a href="https://facebook.com/<?=$row->fid?>" target="_blank"><i class="fa fa-link" aria-hidden="true"></i> <?=l('Visit page')?></a></td>
-                                <td class="status-post"></td>
-                            </tr>
-                                <?php if(!empty($row->groups)){
-                                foreach ($row->groups as $key => $group) {
-                                    $type = ($group->privacy == "CLOSED" || $group->privacy == "SECRET")?1:0;
-                                ?>
-                                <tr class="post-pending">
-                                    <td>
-                                        <input type="checkbox" name="id[]" id="md_checkbox_<?=$group->pid?>" class="filled-in chk-col-red checkItem" value="<?=$group->type."{-}".$row->id."{-}".$row->fullname."{-}".$group->pid."{-}".$group->name."{-}".$type?>" >
-                                        <label class="p0 m0" for="md_checkbox_<?=$group->pid?>">&nbsp;</label>
-                                    </td>
-                                    <td><?=$row->username?></td>
-                                    <td><?=$group->name?></td>
-                                    <td><?=$group->type?></td>
-                                    <td><?=($group->privacy != "")?"":l('______')?>
-                                        <?php if($group->privacy != ""){?>
-                                            <i class="fa fa-eye<?=$group->privacy != "OPEN"?"-slash col-red":" col-green"?>" aria-hidden="true"></i> <?=$group->privacy?>
-                                        <?php }?>
-                                    </td>
-                                    <td><a href="https://facebook.com/<?=$group->pid?>" target="_blank"><i class="fa fa-link" aria-hidden="true"></i> <?=l('Visit page')?></a></td>
-                                    <td class="status-post"></td>
-                                </tr>
-                                <?php }}?>
-                            <?php }}?>
-                        </tbody>
+                        
                     </table>
                 </div>
             </div>

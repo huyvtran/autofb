@@ -118,9 +118,8 @@
                     <h2>
                         <i class="fa fa-desktop" aria-hidden="true"></i> <?=l('Huong dan su dung')?> 
                     </h2>
-                     
                 </div>
-<iframe width="100%" height="360" src="https://www.youtube.com/embed/DoOKC0nayw8" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<iframe width="100%" height="360" src="https://www.youtube.com/embed/wPDrGZ2R_8M" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>
         </div>
         
@@ -136,11 +135,11 @@
                     <div class="row"> 
                         <div class="col-md-12">
                             <ul class="nav nav-tabs tab_add_friend" role="tablist">
-                                <li role="presentation" class="active" data-type="search_user">
+                                <!-- <li role="presentation" class="active" data-type="search_user">
                                     <a href="#add_friend_2" data-toggle="tab">
                                         <i class="material-icons">supervisor_account</i> <?=l('Search Friend')?>
                                     </a>
-                                </li> 
+                                </li>  -->
                                 <li role="presentation" data-type="friend_user">
                                     <a href="#add_friend_3" data-toggle="tab">
                                         <i class="material-icons">filter_tilt_shift</i> <?=l('Friend Of User')?>

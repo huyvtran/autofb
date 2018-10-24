@@ -11,7 +11,7 @@
             <ul class="nav navbar-nav top-menu">
                 <!--<li><a href="<?=url("payments")?>" target="_blank"><?=l('Pricing')?></a></li> -->
                 <li><a href="/facebook_accounts" target="_blank">  <?=l('Hướng dẫn')?></a></li>
-                <li><a href="/auto/#about" target="_blank">  <?=l('Hỗ trợ')?></a></li>
+                <li><a href="https://www.facebook.com/zinbeeauto/" target="_blank">  <?=l('Hỗ trợ')?></a></li>
                 <li><a href="/auto/#banggia" target="_blank">  <?=l('Thanh toán')?></a></li>
             </ul>
             <ul class="nav navbar-nav top-menu right mr0">

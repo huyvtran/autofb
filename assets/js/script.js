@@ -59,7 +59,7 @@
                 emptyTable: Lang['emptyTable']
             });
 
-            $('.filter_account,.filter_profile,.filter_group,.filter_page,.filter_friend').change( function() {
+            $('.filter_account,.filter_profile,.filter_group,.filter_page,.filter_friend,.filter_campaign_group,.filter_campaign_category').change( function() {
                 _dataTable.draw();
             });
 
@@ -168,10 +168,10 @@
         //            emptyTable: Lang['emptyTable']
         //    });
 
-            $('.filter_account,.filter_profile,.filter_group,.filter_page,.filter_friend,.filter_category').change( function() {
+            $('.filter_account,.filter_profile,.filter_group,.filter_page,.filter_friend,.filter_category,.filter_campaign_group,.filter_campaign_category').change( function() {
                 _dataTableall.draw();
             });
-             $('.filter_account').change( function() {
+            $('.filter_account').change( function() {
                 _dataTableall.draw();
             });
 
@@ -179,28 +179,59 @@
                 _dataTableSchedule.draw();
             });
 
+            // $('.filter_campaign').change( function() {
+            //     _dataTableall.draw();
+            // });
+
+            // $('.filter_campaign').change( function() {
+            //     _dataTableSchedule.draw();
+            // });
+
+            $('.filter_campaign_group').change( function() {
+                _dataTableall.draw();
+            });
+
+            $('.filter_campaign_group').change( function() {
+                _dataTableSchedule.draw();
+            });
+
+            $('.filter_campaign_category').change( function() {
+                _dataTableall.draw();
+            });
+
+            $('.filter_campaign_category').change( function() {
+                _dataTableSchedule.draw();
+            });
+
             //CUSTOM FILTER
             $.fn.dataTable.ext.search.push(
                 function( settings, data, dataIndex ) {
+                    console.log('chienva: '+data);
                     var el_profile = $('.filter_profile');
                     var el_group   = $('.filter_group');
                     var el_page    = $('.filter_page');
                     var el_friend  = $('.filter_friend');
                     var fbuser     = $('.filter_account').val();
+                    var fcampaign  = $('.filter_campaign').val();
+                    var fcampaign_gr  = $('.filter_campaign_group').val();
+                    var fcampaign_cate  = $('.filter_campaign_category').val();
                     var profile    = el_profile.is(':checked')?"profile":"";
                     var group      = el_group.is(':checked')?"group":"";
                     var page       = el_page.is(':checked')?"page":"";
                     var friend     = el_friend.is(':checked')?"friend":"";
                     var _account   = data[1];
                     var _type      = data[3];
+                    var _campaign  = data[2];
+                    var _campaign_cate  = data[2];
 
-                    if(fbuser != "" && fbuser != undefined){
+
+                    if(fbuser != "" && fbuser != undefined || fcampaign != "" && fcampaign != undefined || fcampaign_gr != "" && fcampaign_gr != undefined){
                         if(el_profile.length > 0 || el_friend.length > 0){
                             if ((fbuser == _account) && (profile == _type || group == _type || page == _type || friend == _type)){
                                 return true;
                             }
                         }else{
-                            if (fbuser == _account){
+                            if (fbuser == _account || fcampaign == _campaign || fcampaign_gr == _account){
                                 return true;
                             }
                         }
@@ -212,6 +243,7 @@
                             }
                             return false; 
                         }
+                        
                         return true;
                     }
                     
@@ -286,7 +318,7 @@
                 _action  = _that.parents("tr").prev("tr").data("action");
                 _id  = _that.parents("tr").prev("tr").data("id");
             }
-            if(_type == "delete"){
+            if(_type == "delete" || _type == "delete_campaign_group"){
                 _data    = $.param({token:token, action: _type, id: _id});
                 self.showConfirmMessage(_confirm, function(){
                     $.post(_action, _data, function(result){
@@ -328,6 +360,23 @@
                 });
 
         });
+
+        $(document).on('click', '.btnDeleteUserCategories', function() {            
+            _that = $(this);
+            _confirm = _that.data("confirm");
+            _id = $(this).attr("data-id");
+            _data    = $.param({id: _id});
+            _action = $(this).attr("data-action");
+            self.showConfirmMessage(_confirm, function(){
+                    $.post(_action, _data, function(result){
+                        setTimeout(function(){
+//                            window.location.reload();
+                        },2000);
+                        self.showSuccessAutoClose(Lang["deleted"], "success", 2000);
+                        $("#cate-item-"+_id).remove();
+                    },'json');
+            });
+        })
 
         $(document).on('click', '.btnUpdateGroups', function(){
             _that    = $(this);
@@ -389,6 +438,30 @@
                 },'json');
             }
             return false;
+        });
+
+        $(document).on('click', '.btnActionModuleItemCopy', function(){
+            _that    = $(this);
+            _action  = _that.parents("tr").data("action");
+            _type    = _that.data("action");
+            _confirm = _that.data("confirm");
+            _id      = _that.parents("tr").data("id");
+           
+            if(_that.parents("tr").hasClass("child")){
+                _action  = _that.parents("tr").prev("tr").data("action");
+                _id  = _that.parents("tr").prev("tr").data("id");
+            }
+
+                _data    = $.param({token:token, action: _type, id: _id});
+                self.showConfirmMessage(_confirm, function(){
+                    $.post(_action, _data, function(result){
+                        setTimeout(function(){
+                            window.location.reload();
+                        },2000);
+                        self.showSuccessAutoClose(Lang["Copy"], "success", 2000);
+                    },'json');
+                });
+
         });
 	};
 
@@ -711,8 +784,10 @@
             _data     = _form.serialize();
             _type     = $('.post_type .active').data('type');
             _title    = $(".save_title").val();
-            _category = _that.data("type");
-            _data     = _data + '&' + $.param({token:token, title: _title, type: _type, category: _category});
+            _category = _that.data("type");         
+            _user_cate_name = $("#user_cate :selected").text();
+            
+            _data     = _data + '&' + $.param({token:token, title: _title, type: _type, category: _category, user_cate_name: _user_cate_name});
             $(".page-loader-action").fadeIn();
             if(!_form.hasClass('disable')){
                 _form.addClass('disable');
@@ -735,6 +810,19 @@
 
             return false;
         });
+
+        $(".btnAddPostCate").click(function(e){
+            e.preventDefault();
+            _category = $("#cate_post").val();
+            _data = $.param({cate: _category});                 
+            if(_category != '' && _category!== null) {
+                 $.post(PATH + "save/ajax_save_cate", _data, function(result){                    
+                    //console.log(result);                    
+                    window.location.reload();
+                 })
+            }
+            return false;
+        })
 
 
         $('.btnaddcat').click(function(){

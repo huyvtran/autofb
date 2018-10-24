@@ -11,7 +11,8 @@ class save extends MX_Controller {
 	public function index(){
 		$type = segment(2);
 		$data = array(
-			"result" => $this->model->getSave($type)
+			"result" => $this->model->getSave($type),
+			"categories" => $this->model->getUserCategories()
 		);
 		$this->template->title(l('Save management'));
 		$this->template->build('index', $data);
@@ -279,6 +280,8 @@ class save extends MX_Controller {
 		}else{
 			$data["name"]    = filter_input_xss(post('title'));
 			$data["uid"]     = (int)session("uid");
+			$data['user_category'] = post('user_cate');			
+			$data['user_category_name'] = post("user_cate_name");
 			$data["created"] = NOW;
 			$this->db->insert(SAVE, $data);
 			ms(array(
@@ -287,6 +290,40 @@ class save extends MX_Controller {
 				"txt"   => l('Save successfully')
 			));
 		}
+	}
+
+	public function getUserCategoryNameByID($cateID) {
+		$this->db->where('user_category', $cateID);
+		$query = $this->db->get(SAVE);
+		if($query->result()){
+			return $query->result();
+		}else{
+			return 0;
+		}
+	}
+
+	public function ajax_save_cate(){
+
+		$data = array(
+	       'name' => post('cate'),	    
+	       'uid' => (int)session("uid")
+	    );				
+       //	$checkid = $this->model->get("*", USER_CATEGORIES, "name = '".$data[name]."'");
+		//	if(!empty($checkname)){
+		//		ms(array(
+		//			"st"    => "error",
+		//			"label" => "bg-red",
+		//			"txt"   => l('This category already exists')
+		//		));
+		//	} else {
+		        $this->db->insert(USER_CATEGORIES, $data);
+		        ms(array(
+			    "st"    => "success",
+			    "label" => "bg-light-green",
+			    "txt"   => l('Save successfully')
+		        ));
+			//}
+
 	}
 
 	public function ajax_get_save(){
@@ -319,6 +356,32 @@ class save extends MX_Controller {
 		);
 
 		print_r(json_encode($json));
+	}
+
+	public function ajax_delete_user_categories() {
+		$id = (int)post('id');
+		$POST = $this->model->get('*', USER_CATEGORIES, "id = '{$id}'");
+		if(!empty($POST)){
+
+			if($this->db->delete(USER_CATEGORIES, "id = '{$id}'")) {
+				$json= array(
+					'st' 	=> 'success',
+					'txt' 	=> l('successfully')
+				);
+
+				print_r(json_encode($json));
+			}
+			else {
+				$json= array(
+					'st' 	=> 'something wrong',
+					'txt' 	=> l('error')
+				);
+
+				print_r(json_encode($json));
+			}
+		}
+
+
 	}
 
 	public function ajax_action_multiple(){

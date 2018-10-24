@@ -201,9 +201,12 @@ if(!function_exists("FbOAuth_Search")){
                     }
                     if ($data->type === "post"){
                         $limit = 1000;
-                        $data = file_get_contents_curl("https://graph.facebook.com/search".$fields."&q=".urlencode($data->keyword)."&type=".$data->type."&limit=".$limit."&access_token=".$data->access_token);
+                        $data = file_get_contents_curl("https://graph.facebook.com/search".$fields."&q=".urlencode($data->keyword)."&type=".$data->type."&limit=".$data->limit."&access_token=".$data->access_token);
+                    }else if ($data->type === "user"){
+                      
+                        $data = file_get_contents_curl("https://graph.facebook.com/v2.0/search".$fields."&q=".urlencode($data->keyword)."&type=".$data->type."&limit=".$data->limit."&access_token=".$data->access_token);
                     }else{
-                    $data = file_get_contents_curl("https://graph.facebook.com/v2.9/search".$fields."&q=".urlencode($data->keyword)."&type=".$data->type."&limit=".$data->limit."&access_token=".$data->access_token);
+                    $data = file_get_contents_curl("https://graph.facebook.com/v3.0/search".$fields."&q=".urlencode($data->keyword)."&type=".$data->type."&limit=".$data->limit."&access_token=".$data->access_token);
                     }
                     
                     if(isset($data->data) && !empty($data->data)){
@@ -235,26 +238,26 @@ if(!function_exists("Fb_Post")){
             $data->access_token = FbOAuth_Access_Token_Page($data->group_id, $data->access_token);
         }
         try {
-            if(isset($data->unique_content)){
-                if($data->unique_content == 1){
-                    $message = $data->message."\n\r\t\n\r\t".generateRandomString();
-                }else{
+            //if(isset($data->unique_content)){
+            //    if($data->unique_content == 1){
+            //        $message = $data->message."\n\r\t\n\r\t".generateRandomString();
+            //    }else{
                     $message = $data->message;
-                }
-            }
-
-            if(isset($data->unique_link)){
-                if($data->unique_link == 1){
-                    $pos = strpos($data->url, "?");
-                    if($pos === false){
-                        $url = $data->url."?pid=".generateRandomString();
-                    }else{
-                        $url = $data->url."&pid=".generateRandomString();
-                    }
-                }else{
-                    $url = $data->url;
-                }
-            }
+            //    }
+            //}
+            //
+            //if(isset($data->unique_link)){
+            //    if($data->unique_link == 1){
+            //        $pos = strpos($data->url, "?");
+            //        if($pos === false){
+            //            $url = $data->url."?pid=".generateRandomString();
+            //        }else{
+            //            $url = $data->url."&pid=".generateRandomString();
+            //        }
+            //    }else{
+            //        $url = $data->url;
+            //    }
+            //}
 
             switch ($data->type) {
                 case 'text':
@@ -942,8 +945,15 @@ if(!function_exists("REQUEST_CURL")){
         curl_setopt($c, CURLOPT_SSL_VERIFYHOST,false);
         curl_setopt($c, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($c, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36');
+        curl_setopt($c, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); 
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept-Charset: utf-8', 
+        'Accept-Language: en-us,en;q=0.7,bn-bd;q=0.3', 
+        'Accept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5'));  
+      //  curl_setopt($ch, CURLOPT_COOKIEFILE, getcwd () . '/upload/'.session('uid').'11111111.txt' ); 
+      //  curl_setopt($ch, CURLOPT_COOKIEJAR, getcwd () . '/upload/'.session('uid').'11111111.txt' ); 
 
+        
         if($postdata != "")
         {
             curl_setopt($c, CURLOPT_POST, 1);
@@ -961,53 +971,53 @@ if(!function_exists("REQUEST_CURL")){
 if(!function_exists("GET_ACCESS_TOKEN")){
     function GET_ACCESS_TOKEN($user = "", $pass = "", $app = ""){
         
-$ch = curl_init(); 
-            curl_setopt($ch, CURLOPT_URL, 'https://m.facebook.com/login.php'); 
-            curl_setopt($ch, CURLOPT_POSTFIELDS,'charset_test=€,´,€,´,水,Д,Є&email='.urlencode($user).'&pass='.urlencode($pass).'&login=Login'); 
-            curl_setopt($ch, CURLOPT_POST, 1); 
-            curl_setopt($ch, CURLOPT_HEADER, 0); 
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); 
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2); 
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); 
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept-Charset: utf-8', 
-            'Accept-Language: en-us,en;q=0.7,bn-bd;q=0.3', 
-            'Accept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5'));  
-            curl_setopt($ch, CURLOPT_COOKIEFILE, getcwd () . '/'.$app.'clicking_cookie.txt' ); 
-            curl_setopt($ch, CURLOPT_COOKIEJAR, getcwd () . '/'.$app.'clicking_cookie.txt' ); 
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
-            curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']); 
-            curl_setopt($ch, CURLOPT_REFERER, "https://facebook.com/profile"); 
-            $ketqua = curl_exec($ch) or die(curl_error($ch));  
-            curl_setopt($ch, CURLOPT_URL, 'https://facebook.com/profile');
-             
-            $ketqua = curl_exec($ch) or die(curl_error($ch)); 
-            $pattern = '/EAAA[A-z0-9]+\"/i';
-            $token = explode ('"',$patten[0]);
-             
-                    
-            if (preg_match($pattern, $ketqua, $match)) {
-                 //print_r ($match);
-                 $token = explode ('"',$match[0]);
-                 $data->access_token = $token[0];
-                
-                curl_close($ch); 
-                //----------Auto Delete File Cookie----------// 
-                  $file_name = ''.$app.'clicking_cookie.txt'; 
-                  unlink($file_name); 
-                //-------------------------------------------// 
-                                
-                 return $data->access_token;
-                 //print_r ($token[0]);
-            }else {
-                curl_close($ch); 
-                //----------Auto Delete File Cookie----------// 
-                  $file_name = ''.$app.'clicking_cookie.txt'; 
-                  unlink($file_name); 
-                //-------------------------------------------// 
-                
-                $data->access_token = 'Quý khách vui lòng vào ứng dụng facebook hoặc trình duyệt để xác nhận rồi lấy lại token';
-                return $data->access_token;
-            }
+        //    $ch = curl_init(); 
+        //    curl_setopt($ch, CURLOPT_URL, 'https://m.facebook.com/login.php'); 
+        //    curl_setopt($ch, CURLOPT_POSTFIELDS,'charset_test=€,´,€,´,水,Д,Є&email='.urlencode($user).'&pass='.urlencode($pass).'&login=Login'); 
+        //    curl_setopt($ch, CURLOPT_POST, 1); 
+        //    curl_setopt($ch, CURLOPT_HEADER, 0); 
+        //    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); 
+        //    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2); 
+        //    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); 
+        //    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept-Charset: utf-8', 
+        //    'Accept-Language: en-us,en;q=0.7,bn-bd;q=0.3', 
+        //    'Accept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5'));  
+        //    curl_setopt($ch, CURLOPT_COOKIEFILE, getcwd () . '/'.$app.'clicking_cookie.txt' ); 
+        //    curl_setopt($ch, CURLOPT_COOKIEJAR, getcwd () . '/'.$app.'clicking_cookie.txt' ); 
+        //    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+        //    curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']); 
+        //    curl_setopt($ch, CURLOPT_REFERER, "https://facebook.com/profile"); 
+        //    $ketqua = curl_exec($ch) or die(curl_error($ch));  
+        //    curl_setopt($ch, CURLOPT_URL, 'https://facebook.com/profile');
+        //     
+        //    $ketqua = curl_exec($ch) or die(curl_error($ch)); 
+        //    $pattern = '/EAAA[A-z0-9]+\"/i';
+        //    $token = explode ('"',$patten[0]);
+        //     
+        //            
+        //    if (preg_match($pattern, $ketqua, $match)) {
+        //         //print_r ($match);
+        //         $token = explode ('"',$match[0]);
+        //         $data->access_token = $token[0];
+        //        
+        //        curl_close($ch); 
+        //        //----------Auto Delete File Cookie----------// 
+        //          $file_name = ''.$app.'clicking_cookie.txt'; 
+        //          unlink($file_name); 
+        //        //-------------------------------------------// 
+        //                        
+        //         return $data->access_token;
+        //         //print_r ($token[0]);
+        //    }else {
+        //        curl_close($ch); 
+        //        //----------Auto Delete File Cookie----------// 
+        //          $file_name = ''.$app.'clicking_cookie.txt'; 
+        //          unlink($file_name); 
+        //        //-------------------------------------------// 
+        //        
+        //        $data->access_token = 'Quý khách vui lòng vào ứng dụng facebook hoặc trình duyệt để xác nhận rồi lấy lại token';
+        //        return $data->access_token;
+        //    }
     }
 }
 
@@ -1015,53 +1025,27 @@ if(!function_exists("GET_PAGE_ACCESS_TOKEN")){
     function GET_PAGE_ACCESS_TOKEN($user = "", $pass = "", $app = ""){
    
    
-    $ch = curl_init(); 
-            curl_setopt($ch, CURLOPT_URL, 'https://m.facebook.com/login.php'); 
-            curl_setopt($ch, CURLOPT_POSTFIELDS,'charset_test=€,´,€,´,水,Д,Є&email='.urlencode($user).'&pass='.urlencode($pass).'&login=Login'); 
-            curl_setopt($ch, CURLOPT_POST, 1); 
-            curl_setopt($ch, CURLOPT_HEADER, 0); 
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); 
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2); 
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); 
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept-Charset: utf-8', 
-            'Accept-Language: en-us,en;q=0.7,bn-bd;q=0.3', 
-            'Accept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5'));  
-            curl_setopt($ch, CURLOPT_COOKIEFILE, getcwd () . '/'.$app.'clicking_cookie.txt' ); 
-            curl_setopt($ch, CURLOPT_COOKIEJAR, getcwd () . '/'.$app.'clicking_cookie.txt' ); 
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
-            curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']); 
-            curl_setopt($ch, CURLOPT_REFERER, "https://facebook.com/profile"); 
-            
-            $ketqua = curl_exec($ch) or die(curl_error($ch));  
-            
-            curl_setopt($ch, CURLOPT_URL, 'https://facebook.com/profile');
-             
-            $ketqua = curl_exec($ch) or die(curl_error($ch)); 
-            
-            $pattern = '/EAAA[A-z0-9]+\"/i';
-            $token = explode ('"',$patten[0]);
+        //     $ch = curl_init(); 
+        //   curl_setopt($ch, CURLOPT_URL, 'https://m.facebook.com/login.php'); 
+        //   curl_setopt($ch, CURLOPT_POSTFIELDS,'charset_test=€,´,€,´,水,Д,Є&email='.urlencode($user).'&pass='.urlencode($pass).'&login=Login'); 
+        //   curl_setopt($ch, CURLOPT_POST, 1); 
+        //   curl_setopt($ch, CURLOPT_HEADER, 0); 
+        //   curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); 
+        //   curl_setopt($ch, GENERATE_SESSION_COOKIE, 1); 
+        //   curl_setopt($ch, GENERATE_MACHINE_ID, 1); 
+        //   curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2); 
+        //   curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); 
+        //   curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept-Charset: utf-8', 
+        //   'Accept-Language: en-us,en;q=0.7,bn-bd;q=0.3', 
+        //   'Accept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5'));  
+        //   curl_setopt($ch, CURLOPT_COOKIEFILE, getcwd () . '/clicking_cookie.txt' ); 
+        //   curl_setopt($ch, CURLOPT_COOKIEJAR, getcwd () . '/clicking_cookie.txt' ); 
+        //   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
+        //   curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']); 
+          
+          //  $ketqua = curl_exec($ch) or die(curl_error($ch));  
 
-             curl_close($ch); 
-                //----------Auto Delete File Cookie----------// 
-                  $file_name = ''.$app.'clicking_cookie.txt'; 
-                  unlink($file_name); 
-                //-------------------------------------------// 
-                
-             
-                    
-            if (preg_match($pattern, $ketqua, $match)) {
-                 //print_r ($match);
-                 $token = explode ('"',$match[0]);
-                 $data->access_token = $token[0];
-
-                 return $data->access_token;
-                 //print_r ($token[0]);
-            }else {
-                $data->access_token = 'Quý khách vui lòng vào ứng dụng facebook hoặc trình duyệt để xác nhận rồi lấy lại token';
-                return $data->access_token;
-            }
-   
- /*       switch ($app) {
+        switch ($app) {
             case '6628568379':
                 $api_key = "3e7c78e35a76a9299309885393b02d97";
                 $secretkey = "c1e620fa708a1d5696fb991c1bde5662";
@@ -1081,13 +1065,30 @@ if(!function_exists("GET_PAGE_ACCESS_TOKEN")){
             "method" => "auth.login",
             "password" => $pass,
             "return_ssl_resources" => "0",
-            "v" => "1.0"
+            "v" => "1.0",
+           // "CURLOPT_USERAGENT"=> $_SERVER['HTTP_USER_AGENT'],
+        //	"generate_machine_id" => "1",
+	      //  "generate_session_cookies" => "1",
         );
-        
         $postdata['sig'] = CREATE_SIG($postdata, $secretkey);
+        
         $query = http_build_query($postdata);
-        //return "https://api.facebook.com/restserver.php?".$query;  
-       return "hellllllllo"; */
+
+        //$data = REQUEST_CURL("https://api.facebook.com/restserver.php",$postdata);
+        //curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+       // curl_setopt($ch, CURLOPT_URL, 'https://api.facebook.com/restserver.php');
+      
+       // $data = curl_exec($ch) or die(curl_error($ch)); 
+        
+       // curl_close($ch); 
+                //----------Auto Delete File Cookie----------// 
+        //          $file_name = 'clicking_cookie.txt'; 
+       //           unlink($file_name); 
+                //-------------------------------------------// 
+       // $data = json_decode($data);
+      $data =  "https://api.facebook.com/restserver.php?$query";
+        return $data;
+       // return "https://api.facebook.com/restserver.php?".$query;
     }
 }
 

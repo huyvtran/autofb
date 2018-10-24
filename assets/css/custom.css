@@ -870,3 +870,23 @@ div.dataTables_wrapper div.dataTables_length label {
         float: left;
 }
 
+.fc-unthemed td.fc-today {
+	    background: #8BC34A !important;
+}
+.fc-unthemed td {
+    border-color: #8BC34A !important;
+}
+.fc-day-grid-event .fc-content {
+    white-space: nowrap;
+    overflow: hidden;
+    background: #2196F3 ;
+    color: #ffffff !important;
+}
+.fc-event .fc-bg {
+    background: #2196F3 !important;
+	opacity: 1 !important;
+}
+
+.info-box-2 .content .text {  
+    margin-bottom: 5px;
+}

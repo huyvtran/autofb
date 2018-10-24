@@ -87,7 +87,7 @@
                 <li class="<?=(segment(1) == "content" || segment(2) == "content")?"active":""?>">
                     <a href="<?=url('content')?>">
                         <i class="material-icons">content_copy</i>
-                        <span><?=l('Nội dung nghìn like')?></span>
+                        <span><?=l('Nội dung sưu tầm')?></span>
                     </a>
                 </li>
                 <?php }?>
@@ -281,7 +281,7 @@
                 <li class="<?=(segment(1) == "add_friends" || segment(2) == "add_friends")?"active":""?>">
                     <a href="javascript:void(0);" class="menu-toggle">
                         <i class="material-icons">account_circle</i>
-                        <span><?=l('Thêm bạn')?></span>
+                        <span><?=l('Tìm kiếm khách hàng tiềm năng')?></span>
                     </a>
                     <ul class="ml-menu">
                         <li class="<?=(segment(1) == "add_friends")?"active":""?>">
@@ -301,7 +301,7 @@
                 <li class="<?=(segment(1) == "unfriends" || segment(2) == "unfriends")?"active":""?>">
                     <a href="javascript:void(0);" class="menu-toggle">
                         <i class="fa fa-user-times fix-iconfa-sidebar" aria-hidden="true"></i>
-                        <span><?=l('Huỷ kết bạn')?></span>
+                        <span><?=l('Xóa bạn')?></span>
                     </a>
                     <ul class="ml-menu">
                         <li class="<?=(segment(1) == "unfriends")?"active":""?>">

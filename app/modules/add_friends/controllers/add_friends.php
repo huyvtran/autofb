@@ -130,13 +130,13 @@ class add_friends extends MX_Controller {
 
 	public function ajax_search_member(){
 		$account = $this->model->get("*", FACEBOOK_ACCOUNTS, "status = 1 AND id = '".post("account")."'".getDatabyUser());
-		if(empty($account)){
-			ms(array(
-				"st"    => "valid",
-				"label" => "bg-red",
-				"txt"   => l('Facebook account not exist')
-			));
-		}
+		//if(empty($account)){
+		//	ms(array(
+		//		"st"    => "valid",
+		//		"label" => "bg-red",
+		//		"txt"   => l('Facebook account not exist')
+		//	));
+		//}
 
 		$result = FbOAuth_Search(array(
 			"access_token" => $account->access_token,

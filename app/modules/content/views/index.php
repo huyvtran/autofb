@@ -9,9 +9,8 @@
                         <i class="fa fa-desktop" aria-hidden="true"></i> <?=l('Huong dan su dung')?> 
                     </h2>   
                 </div>
-<iframe width="640" height="360" src="https://www.youtube.com/embed/onfu9qTrg_o" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>
-        </div>
+        </div> 
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="card">
                 <div class="header">

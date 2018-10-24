@@ -82,7 +82,7 @@
                                         <div class="form-line">
                                             <input type="text" name="video_url" class="form-control">
                                         </div>
-                                        <span class="input-group-btn">
+                                         <span class="input-group-btn" style = "display:none">
                                           <a class="btn bg-red waves-effect dialog-upload"><i class="fa fa-upload" aria-hidden="true"></i> <?=l('Upload')?></a>
                                         </span>
                                     </div>
@@ -118,15 +118,6 @@
 
                            <div class="row">
                                 <div class="col-md-12 col-xs-12">
-                                 <!--    <b><?=l('Advanced options')?></b>
-                                    <div class="form-group wa" style="margin-top: 8px;">
-                                        <input type="checkbox" id="md_checkbox_unique_content" name="unique_content" class="filled-in chk-col-deep-orange" value="1">
-                                        <label class="mb0 mr15" for="md_checkbox_unique_content">Unique content</label>
-
-                                        <input type="checkbox" id="md_checkbox_unique_link" name="unique_link" class="filled-in chk-col-deep-orange" value="1">
-                                        <label class="mb0 mr15" for="md_checkbox_unique_link">Unique link</label>
-                                    </div>
-                                    -->
                                     <label><?=l('Auto comment post')?></label>     
                                     <div class="form-group">
                                         <div class="form-line">
@@ -137,6 +128,16 @@
                             </div> 
 
                             <div class="row">
+                                <div class="col-md-12 mb0">
+                                    <div class="form-group">
+                                        <label>Danh mục bài viết</label>
+                                        <select class="form-control" name="user_cate" id="user_cate">
+                                              <?php foreach ($userCategories as $row) {?>
+                                                <option value="<?=$row->id?>"><?=$row->name?></option>
+                                                <?php }?>                                            
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="col-md-12 mb0">
                                     <button type="button" class="btn bg-grey waves-effect btnSavePost" data-type="post"><i class="fa fa-floppy-o" aria-hidden="true"></i> <?=l('Lưu bài')?></button>
                                     <div class="btn-group right" role="group">
@@ -257,7 +258,7 @@
                         <i class="fa fa-desktop" aria-hidden="true"></i> <?=l('Huong dan su dung')?> 
                     </h2>   
                 </div>
-<iframe width="100%" height="360" src="https://www.youtube.com/embed/LV49aMgrWno" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+					<iframe width="100%" height="360" src="https://www.youtube.com/embed/LV49aMgrWno" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                 
                 <div class="header">
                     <h2>
@@ -326,7 +327,13 @@
         </div>
 
         <div class="clearfix"></div>
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+				<div class="info-box-2 bg-red hover-zoom-effect" style="font-size:15px">
+					<div class="content">
+						<div class="text uc"><?=l('Chú ý:')?></div>
+						<div class="number" style="font-size:15px">Mỗi nội dung giống nhau chỉ nên đăng vào 2-3 nơi để tránh bị facebook báo spam bài viết</div>
+					</div>
+				</div>
             <div class="card">
                 <div class="header">
                     <h2>
@@ -375,7 +382,7 @@
                     </div>
                 </div>
                 <div class="body p0">
-                   <table class="table table-bordered table-striped table-hover js-dataTable dataTable mb0">
+                  <table id="book-table" class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
                                 <th style="width: 10px;">
@@ -390,53 +397,13 @@
                                 <th><?=l('Process')?></th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <?php if(!empty($result)){
-                            foreach ($result as $key => $row) {
-                                $rand_profile = generateRandomString();
-                            ?>
-                            <tr class="post-pending">
-                                <td>
-                                    <input type="checkbox" name="id[]" id="md_checkbox_<?=$row->fid.$rand_profile?>" class="filled-in chk-col-red checkItem" value="<?="profile{-}".$row->id."{-}".$row->fullname."{-}".$row->fid."{-}".$row->fullname."{-}0"?>">
-                                    <label class="p0 m0" for="md_checkbox_<?=$row->fid.$rand_profile?>">&nbsp;</label>
-                                </td>
-                                <td><?=$row->username?></td>
-                                <td><?=$row->fullname?></td>
-                                <td>profile</td>
-                                <td><?=l('______')?></td>
-                                <td><a href="https://facebook.com/<?=$row->fid?>" target="_blank"><i class="fa fa-link" aria-hidden="true"></i> <?=l('Visit page')?></a></td>
-                                <td class="status-post"></td>
-                            </tr>
-                                <?php if(!empty($row->groups)){
-                                foreach ($row->groups as $key => $group) {
-                                    $rand_groups = generateRandomString();
-                                    $type = ($group->privacy == "CLOSED" || $group->privacy == "SECRET")?1:0;
-                                ?>
-                                <tr class="post-pending">
-                                    <td>
-                                        <input type="checkbox" name="id[]" id="md_checkbox_<?=$group->pid.$rand_groups?>" class="filled-in chk-col-red checkItem" value="<?=$group->type."{-}".$row->id."{-}".$row->fullname."{-}".$group->pid."{-}".$group->name."{-}".$type?>">
-                                        <label class="p0 m0" for="md_checkbox_<?=$group->pid.$rand_groups?>">&nbsp;</label>
-                                    </td>
-                                    <td><?=$row->username?></td>
-                                    <td><?=$group->name?></td>
-                                    <td><?=$group->type?></td>
-                                    <td><?=($group->privacy != "")?"":l('______')?>
-                                        <?php if($group->privacy != ""){?>
-                                            <i class="fa fa-eye<?=$group->privacy != "OPEN"?"-slash col-red":" col-green"?>" aria-hidden="true"></i> <?=$group->privacy?>
-                                        <?php }?>
-                                    </td>
-                                    <td><a href="https://facebook.com/<?=$group->pid?>" target="_blank"><i class="fa fa-link" aria-hidden="true"></i> <?=l('Visit page')?></a></td>
-                                    <td class="status-post"></td>
-                                </tr>
-                                <?php }}?>
-                            <?php }}?>
-                        </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
 </form>
+
 
 
 <div class="modal fade" id="modal-update-category" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">

@@ -16,6 +16,9 @@ define("SAVE_DATA", "save_data");
 define("CATEGORIES", "categories");
 define("CATEGORY_DATA", "category_data");
 define("COUPON", "coupon");
+define("USER_CATEGORIES", "user_categories");
+define("CAMPAIGN_GROUP", "campaign_group");
+define("CAMPAIGN", "campaign");
 /*
 |--------------------------------------------------------------------------
 | File and Directory Modes

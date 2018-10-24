@@ -7,22 +7,11 @@
                     <h2>
                         <i class="fa fa-desktop" aria-hidden="true"></i> <?=l('HƯỚNG DẪN LẤY TOKEN TRÊN MÁY TÍNH')?> 
                     </h2>
-                     
-                </div>
-                <iframe width="560" height="315" src="https://www.youtube.com/embed/WdoprwwxQiI" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                 
-            </div>
-            <div class="card">
-                <div class="header"><h5><?=l ('Copy link dưới dán vào trình duyệt chorme hoặc cốc cốc') ?> </h5>
-                
-                <div>
-                    <a href= "view-source:https://www.facebook.com/profile" target="_blank" > view-source:https://www.facebook.com/profile</a>
                 </div>
-                <div>
-                    <a href= "https://baiviethay.org/lay-ma-token-facebook-cap-nhat-29-9-2018/" target="_blank" > Cách lấy token mới nhất</a>
-                </div>
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/mZfJ2bazs0s" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>
-            </div>
+           
         </div>
         
       <!--  <?php if((FACEBOOK_ID != "" && FACEBOOK_SECRET != "") || (GOOGLE_ID != "" && GOOGLE_SECRET != "") || (TWITTER_ID != "" && TWITTER_SECRET != "")){?>

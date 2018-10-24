@@ -61,13 +61,18 @@ $route['schedules/ajax_action_multiple'] = "schedules/ajax_action_multiple";
 
 $route['save/(:any)'] = "save/index/$1";
 $route['save/ajax_save'] = "save/ajax_save";
+$route['save/ajax_save_cate'] = "save/ajax_save_cate";
 $route['save/ajax_get_save'] = "save/ajax_get_save";
 $route['save/ajax_action_multiple'] = "save/ajax_action_multiple";
 $route['save/ajax_action_item'] = "save/ajax_action_item";
+$route['save/ajax_delete_user_categories'] = "save/ajax_delete_user_categories";
+//$route['save/listPostData'] = "save/listPostData";
 $route['language'] = "blocks/language";
 $route['schedules/(:any)/ajax_page'] = "schedules/ajax_page";
+$route['work_flow/(:any)/ajax_page'] = "work_flow/ajax_page";
 
 $route['login'] = "home/login";
+$route['listPostData'] = "save/listPostData";
 $route['timezone'] = "home/timezone";
 $route['register'] = "home/register";
 $route['logout'] = "home/logout";
@@ -78,6 +83,4 @@ $route['openid/(:any)'] = 'user_management/openid/$1';
 $route['oauth/facebook'] = "home/facebook";
 $route['oauth/google'] = "home/google";
 $route['oauth/twitter'] = "home/twitter";
-
-
 

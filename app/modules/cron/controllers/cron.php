@@ -9,15 +9,23 @@ class cron extends MX_Controller {
 	}
 	
 	public function  test4 (){
-	    echo '<pre>';
-	    $id = "46";
-       // $result  = $this->model->fetch("id,cat_data,uid", save_data, "","DESC", "LIMIT 100");
-       $cate = "Động lực sống";
-        $this->db->select('id');
-        $this->db->from('save_data');
-        $this->db->where("cat_data= '".$cate."'");
-        $count_allcat =  $this->db->count_all_results();
-        print_r ($count_allcat);
+echo "<pre>";
+        $row->cat_data = "Kinh doanh";
+					        $this->db->select('id');
+                            $this->db->from('save_data');
+                            $this->db->where('status = ', 1);
+                            $this->db->where("cat_data= '".$row->cat_data."'");
+                            $count_allcat =  $this->db->count_all_results();
+					     //   print_r ($count_allcat);
+							$random = rand(1,$count_allcat-1);
+					        $this->db->select('*');
+                            $this->db->from('save_data');
+                            $this->db->where('status = ', 1);
+                            $this->db->where("cat_data= '".$row->cat_data."'");
+                            $this->db->limit(1,$random);
+                            $get_data= $this->db->get()->result();
+				
+							print_r ($get_data[0]);
 	}
 	
 	public function Them_data_baiviet () {
@@ -537,7 +545,7 @@ public function get_data_pages() {
 	    ->select('*')
 	    ->from(FACEBOOK_ACCOUNTS)
 	    ->where('status = ', 1)
-	    ->limit(230)
+	   // ->limit(230)
 	    ->get()->result();
 	    
         $get_tokenlike  =  $this->model->fetch("token", token, "status = 1");
@@ -649,7 +657,7 @@ public function get_data_pages() {
 	    ->where('status != ', 2)
 	    ->where('status != ', 3)
 	    ->where('status != ', 4)
-	    ->limit(150)
+	   // ->limit(150)
 	    ->where("category = 'auto_seeding'")
 	    ->where('time_post <= ', NOW)
 	    ->get()->result();
@@ -798,14 +806,10 @@ public function get_data_pages() {
 	    ->where('status != ', 2)
 	    ->where('status != ', 3)
 	    ->where('status != ', 4)
-	    ->limit(134)
 	    ->where('category', 'post')
 	    ->where('time_post <= ', NOW)
 	    ->get()->result();
-
 		if(!empty($result)){
-		
-	
 			foreach ($result as $key => $row) {
 			    
 			    $arr_update = $row;
@@ -815,18 +819,18 @@ public function get_data_pages() {
 				$repeat_end   = $row->repeat_end;
 				$time_post    = $row->time_post;
 				$deplay       = $row->deplay;
-			    $time_post    = strtotime(NOW) + $repeat_time - rand(120,380);
+			    $time_post    = strtotime(NOW) + $repeat_time;
                 
 				$time_post_only_day = date("Y-m-d", $time_post);
 				$time_post_day      = strtotime($time_post_only_day);
 				$repeat_end         = strtotime($repeat_end);
 
-				$row->url         = $spintax->process($row->url);
-				$row->message     = $spintax->process($row->message);
-				$row->title       = $spintax->process($row->title);
-				$row->description = $spintax->process($row->description);
-				$row->image       = $spintax->process($row->image);
-				$row->caption     = $spintax->process($row->caption);
+				$row->url         = $row->url;
+				$row->message     = $row->message;
+				$row->title       = $row->title;
+				$row->description = $row->description;
+				$row->image       = $row->image;
+				$row->caption     = $row->caption;
 
 				$account = $this->model->get("*", FACEBOOK_ACCOUNTS, "id = '".$row->account_id."'");
                 
@@ -837,8 +841,12 @@ public function get_data_pages() {
 					$row->cookies = $account->cookies;
 					$row->fid = $account->fid;
 
+					if($row->chu_ky){
+					$chu_ky = explode ("\n",$row->chu_ky);
+					$chu_ky1 = $chu_ky[rand(0,count($chu_ky))];
+					$row->message = $row->message . "\n" . $chu_ky1;
+					}
 					$response = (object)Fb_Post((object)$row);
-				
 				    
 				        $arr_update = array(
 					    	'status' => ($response->st == "success")?3:4,
@@ -847,9 +855,10 @@ public function get_data_pages() {
 					    );    
 				    
                 	
-					if($repeat == 1 && $time_post_day <= $repeat_end){
+					if(($repeat == 1) && ($time_post_day <= $repeat_end)){
 					    
 						$arr_update['status']    = 5;
+						$time_post    = strtotime(NOW) + $repeat_time - rand(120,380);
 						$arr_update['time_post'] = date("Y-m-d H:i:s", $time_post);
                         $arr_update['result'] = (isset($response->id) && $response->id != "")?$response->id:"";
                         $arr_update['message_error'] = (isset($response->txt) && $response->txt != "")?$response->txt:"";
@@ -862,26 +871,49 @@ public function get_data_pages() {
 						}else{
 							$arr_update['time_post_show'] = date("Y-m-d H:i:s", $time_post);
 						}
-					}else if($repeat == 8 && $time_post_day <= $repeat_end){
+						//$this->db->update(FACEBOOK_SCHEDULES ,$arr_update,"id = {$row->id}");
+					}else if(($repeat == 8) && ($time_post_day <= $repeat_end)){
 					    
-					    $this->db->select('id');
-                        $this->db->from('save_data');
-                        $this->db->where("cat_data= '".$row->cat_data."'");
-                        $count_allcat =  $this->db->count_all_results();
-					    $random = rand(0,$count_allcat);
-					    $this->db->select('*');
-                        $this->db->from('save_data');
-                        $this->db->where("cat_data= '".$row->cat_data."'");
-                        $this->db->limit(1,$random);
-                      
-                       $get_data= $this->db->get()->result();
-					    
+					    $get_save_user = $this->model->fetch("id", user_categories,  "id = '".$row->cat_data."' and uid = '".$row->uid."'");
+    	                if (!empty($get_save_user)){
+    	                 
+    	                 //   $get_data = $this->model->fetch("*", save, "user_category = '".$row->cat_data."' and uid = '".$row->uid."'");
+    	                    $this->db->select('id');
+                            $this->db->from('save');
+                            $this->db->where("user_category= '".$row->cat_data."'");
+                            $this->db->where("uid= '".$row->uid."'");
+                            $this->db->where('status = ', 1);
+                            $count_allcat =  $this->db->count_all_results();
+					        $random = rand(1,$count_allcat-1);
+					        
+					        $this->db->select('*');
+                            $this->db->from('save');
+                            $this->db->where("user_category= '".$row->cat_data."'");
+                            $this->db->where("uid= '".$row->uid."'");
+                            $this->db->limit(1,$random);
+                            $get_data= $this->db->get()->result();
+                            
+    	                }else {	   
+					        $this->db->select('id');
+                            $this->db->from('save_data');
+                            $this->db->where('status = ', 1);
+                            $this->db->where("cat_data= '".$row->cat_data."'");
+                            $count_allcat =  $this->db->count_all_results();
+					        $random = rand(1,$count_allcat-1);
+					        $this->db->select('*');
+                            $this->db->from('save_data');
+                            $this->db->where('status = ', 1);
+                            $this->db->where("cat_data= '".$row->cat_data."'");
+                            $this->db->limit(1,$random);
+                            $get_data= $this->db->get()->result();
+    	                }
+    	                
 	                    $arr_update['result'] = (isset($response->id) && $response->id != "")?$response->id:"";
 						$arr_update['message_error'] = (isset($response->txt) && $response->txt != "")?$response->txt:"";
 						$arr_update['status']    = 5;
+						$time_post    = strtotime(NOW) + $repeat_time - rand(60,200);
 						$arr_update['time_post'] = date("Y-m-d H:i:s", $time_post);
                         
-						$rand_data = rand(0, (count($get_data)-1));
           				$data2 = (array)$get_data[0];
 						$arr_update['category']    = $data2[category];
 				        $arr_update['type']        = $data2[type];
@@ -893,13 +925,16 @@ public function get_data_pages() {
 						$arr_update['message']     = $data2[message];
 						$arr_update['cat_data']    = $row->cat_data;
 				    	
-				    //	$this->db->update(FACEBOOK_SCHEDULES ,$arr_update);
+				    	//$this->db->update(FACEBOOK_SCHEDULES ,$arr_update,"id = {$row->id}");
                     }
+					//if(($time_post >= $repeat_end)){
+					//	$arr_update['status']    = 3;
+						$this->db->update(FACEBOOK_SCHEDULES ,$arr_update,"id = {$row->id}");
+					//}
                     
-					$this->db->update(FACEBOOK_SCHEDULES ,$arr_update , "id = {$row->id}");
 				}else{
 				    	$arr_update = array(
-					//	    'status' => 4,
+						    'status' => 4,
 					    	'message_error' => l('Facebook account not exist')
 					    );
 					$this->db->update(FACEBOOK_SCHEDULES ,$arr_update , "id = {$row->id}");
@@ -923,7 +958,7 @@ public function get_data_pages() {
 	    ->where('status != ', 2)
 	    ->where('status != ', 3)
 	    ->where('status != ', 4)
-	    ->limit(20)
+	    //->limit(20)
 	    ->where('category', 'friend')
 	    ->where('time_post <= ', NOW)
 	    ->get()->result();
@@ -977,9 +1012,14 @@ public function get_data_pages() {
 						}else{
 							$arr_update['time_post_show'] = date("Y-m-d H:i:s", $time_post);
 						}
+						$this->db->update(FACEBOOK_SCHEDULES ,$arr_update , "id = {$row->id}");
+					}else if ($arr_update['status'] == 3){
+						$this->db->update(FACEBOOK_SCHEDULES ,$arr_update , "id = {$row->id}");
+					}else if ($arr_update['status'] == 4){
+						$this->db->delete(FACEBOOK_SCHEDULES, "title = {$row->id}");
 					}
 
-					$this->db->update(FACEBOOK_SCHEDULES ,$arr_update , "id = {$row->id}");
+						
 				}else{
 					$arr_update = array(
 						'status' => 4,
@@ -1005,7 +1045,7 @@ public function get_data_pages() {
 	    ->where('status != ', 2)
 	    ->where('status != ', 3)
 	    ->where('status != ', 4)
-	    ->limit(156)
+	   // ->limit(156)
 	    ->where('category', 'join')
 	    ->where('time_post <= ', NOW)
 	    ->get()->result();
@@ -1084,7 +1124,7 @@ public function get_data_pages() {
 	    ->from(FACEBOOK_SCHEDULES)
 	    ->where('status != ', 2)
 	    ->where('status != ', 3)
-	    ->limit(140)
+	   // ->limit(140)
 	    ->where('status != ', 4)
 	    ->where('category', 'add')
 	    ->where('time_post <= ', NOW)
@@ -1165,7 +1205,7 @@ public function get_data_pages() {
 	    ->where('status != ', 2)
 	    ->where('status != ', 3)
 	    ->where('status != ', 4)
-	    ->limit(155)
+	   // ->limit(155)
 	    ->where('category', 'unfriends')
 	    ->where('time_post <= ', NOW)
 	    ->get()->result();
@@ -1243,7 +1283,7 @@ public function get_data_pages() {
 	    ->select('*')
 	    ->from(FACEBOOK_SCHEDULES)
 	    ->where('status != ', 2)
-	    ->limit(110)
+	   // ->limit(110)
 	    ->where('status != ', 3)
 	    ->where('status != ', 4)
 	    ->where('category', 'invite_to_groups')
@@ -1325,7 +1365,7 @@ public function get_data_pages() {
 	    ->select('*')
 	    ->from(FACEBOOK_SCHEDULES)
 	    ->where('status != ', 2)
-	    ->limit(120)
+	   // ->limit(120)
 	    ->where('status != ', 3)
 	    ->where('status != ', 4)
 	    ->where('category', 'invite_to_pages')
@@ -1402,11 +1442,12 @@ public function get_data_pages() {
 		ini_set('max_execution_time', 300000);
 
 	 	$result = $this->db
-	    ->select('*')
+	    //->select('*')
+		->select('delete_post,repeat_post,repeat_time,repeat_end,time_post,deplay,url,message,title,description,image,caption,account_id, category, group_id, group_type, type')
 	    ->from(FACEBOOK_SCHEDULES)
 	    ->where('status != ', 2)
 	    ->where('status != ', 3)
-	    ->limit(100)
+	    //->limit(100)
 	    ->where('status != ', 4)
 	    ->where('category', 'accept_friend_request')
 	    ->where('time_post <= ', NOW)
@@ -1488,7 +1529,7 @@ public function get_data_pages() {
 	    ->from(FACEBOOK_SCHEDULES)
 	    ->where('status != ', 2)
 	    ->where('status != ', 3)
-	    ->limit(45)
+	   // ->limit(45)
 	    ->where('status != ', 4)
 	    ->where("( category = 'comment' OR category = 'bulk_comment')")
 	    ->where('time_post <= ', NOW)
@@ -1575,7 +1616,7 @@ public function get_data_pages() {
 	    ->from(FACEBOOK_SCHEDULES)
 	    ->where('status = ', 9)
 	    ->where('bot_like != ', 0)
-	    ->limit(50)
+	   // ->limit(50)
 	    ->where("(category = 'bulk_like')")
 	    ->where('time_post <= ', NOW)
 	    ->get()->result();
@@ -1623,7 +1664,7 @@ public function get_data_pages() {
 	    ->where('status != ', 2)
 	    ->where('status != ', 3)
 	    ->where('status != ', 4)
-	    ->limit(120)
+	   // ->limit(120)
 	    ->where('status != ', 9)
 	    ->where("( category = 'like' OR category = 'bulk_like')")
 	    ->where('time_post <= ', NOW)
@@ -1708,7 +1749,7 @@ public function get_data_pages() {
 	    ->where('status != ', 2)
 	    ->where('status != ', 3)
 	    ->where('status != ', 4)
-	    ->limit(20)
+	   // ->limit(20)
 	    ->where('category', 'repost_pages')
 	    ->where('time_post <= ', NOW)
 	    ->get()->result();

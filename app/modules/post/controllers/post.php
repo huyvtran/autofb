@@ -13,7 +13,8 @@ class post extends MX_Controller {
 		$data = array(
 			"result"     => $this->model->getAllAccount(),
 			"save"       => $this->model->fetch("*", SAVE, "status = 1 AND category = 'post'".getDatabyUser()),
-			"categories" => $this->model->fetch("*", CATEGORIES, "category = 'post'".getDatabyUser())
+			"categories" => $this->model->fetch("*", CATEGORIES, "category = 'post'".getDatabyUser()),
+			"userCategories" => $this->model->getUserCategories()
 		);
 		$this->template->title(l('Auto post')); 
 		$this->template->build('index', $data);
@@ -32,6 +33,20 @@ class post extends MX_Controller {
         $books = $this->model->getAllAccountlike();
         $data = array();
         
+		            
+            foreach($account as $g) {
+                $data[] = array(
+                    '<input type="checkbox" name="id[]" id="md_checkbox_'.$g->fid.'" class="filled-in chk-col-red checkItem" value="profile{-}'.$g->id.'{-}'.$g->username.'{-}'.$g->fid.'{-}'.$g->name.'{-}0">
+                    <label class="p0 m0" for="md_checkbox_'.$g->fid.'">&nbsp;</label>',
+                    $g->username,
+                    $g->fullname,
+                    "profile",
+                     "",
+                    '<a href="https://facebook.com/'.$g->fid.'" target="_blank"><i class="fa fa-link" aria-hidden="true"></i> Xem ngay</a>',
+                    ""
+                    
+                );
+            }
             foreach($books->result() as $r) {
             foreach($account as $g) {
  
@@ -49,20 +64,7 @@ class post extends MX_Controller {
                     );
             } 
         }
-            
-            foreach($account as $g) {
-                $data[] = array(
-                    '<input type="checkbox" name="id[]" id="md_checkbox_'.$g->fid.'" class="filled-in chk-col-red checkItem" value="profile{-}'.$g->id.'{-}'.$g->username.'{-}'.$g->fid.'{-}'.$g->name.'{-}0">
-                    <label class="p0 m0" for="md_checkbox_'.$g->fid.'">&nbsp;</label>',
-                    $g->username,
-                    $g->fullname,
-                    "profile",
-                     "",
-                    '<a href="https://facebook.com/'.$g->fid.'" target="_blank"><i class="fa fa-link" aria-hidden="true"></i> Xem ngay</a>',
-                    ""
-                    
-                );
-            }
+
           $output = array(
                "draw" => $draw,
                  "recordsTotal" => $books->num_rows(),
@@ -193,8 +195,8 @@ class post extends MX_Controller {
 			$data["group_id"]       = $group[3];
 			$data["name"]           = $group[4];
 			$data["privacy"]        = $group[5];
-			$data["unique_content"] = (int)post("unique_content")?1:0;
-			$data["unique_link"]    = (int)post("unique_link")?1:0;
+			//$data["unique_content"] = (int)post("unique_content")?1:0;
+			//$data["unique_link"]    = (int)post("unique_link")?1:0;
 			$data["auto_comment"]   = (int)post("auto_comment_post");
 			$data["time_post"]      = NOW;
 			$data["changed"]        = NOW;
@@ -387,6 +389,14 @@ class post extends MX_Controller {
 			));
 		}
 
+		if(count($groups)>5){
+			ms(array(
+				"st"    => "valid",
+				"label" => "bg-red",
+				"txt"   => l('Vui lòng chọn ít hơn 5 Page/Group/Profile để đảm bảo an toàn cho tài khoản của bạn')
+			));
+		}
+
 		if(post('auto_repeat') != 0){
 			$data["repeat_post"] = 1;
 			$data["repeat_time"] = (int)post("auto_repeat");
@@ -401,7 +411,9 @@ class post extends MX_Controller {
 		for ($i=0; $i < count($groups); $i++) { 
 			$list_deplay[] = $deplay*$i;
 		}
-
+		
+		
+		
 		$auto_pause = (int)post('auto_pause');
 		if($auto_pause != 0){
 			$pause = 0;
@@ -440,10 +452,10 @@ class post extends MX_Controller {
 				$data["group_id"]       = $group[3];
 				$data["name"]           = $group[4];
 				$data["privacy"]        = $group[5];
-				$data["unique_content"] = (int)post("unique_content")?1:0;
-				$data["unique_link"]    = (int)post("unique_link")?1:0;
+				//$data["unique_content"] = (int)post("unique_content")?1:0;
+				//$data["unique_link"]    = (int)post("unique_link")?1:0;
 			    $data["auto_comment"]   = (int)post("auto_comment_post");
-				$rand = (rand(300,600));
+				$rand = (rand(100,300));
 				$data["time_post"]      = date("Y-m-d H:i:s", strtotime($time_post) + $list_deplay[$key] - $rand);
 				$data["time_post_show"] = date("Y-m-d H:i:s", $time_post_show + $list_deplay[$key] + $rand);
 				$data["status"]         = 1;

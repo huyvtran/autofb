@@ -38,4 +38,16 @@ class auto_all_model extends MY_Model {
             $query = $this->db->get(FACEBOOK_GROUPS);
 		    return $query;
 		}
+		
+	public function getUserCategories() 
+	{
+		$this->db->select("*");
+		$this->db->where('uid', session('uid'));
+		$query = $this->db->get(USER_CATEGORIES);
+		if($query->result()){
+			return $query->result();
+		}else{
+			return false;
+		}
+	}
 }
